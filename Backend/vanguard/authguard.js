@@ -32,5 +32,5 @@ const authGuard = (req, res, next) => {
     });
   }
 };
-
+//the changes
 module.exports = authGuard;

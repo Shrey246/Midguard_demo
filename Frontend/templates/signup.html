@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up - YourShop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+    <div class="background-overlay"></div>
+    <div class="Signup-container">
+        <div class="Signup-box">
+            <h2>Create an Account</h2>
+            <p>Join us and start your shopping journey!</p>
+            <form id="signupForm" method="POST" action="{{ url_for('signup') }}" novalidate>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="fullName" name="fullName" placeholder="Full Name" required />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Your Email" required />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Create Password" required />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+                </div>
+                <button type="submit" class="Signup-btn">Sign Up</button>
+            </form>
+            <div class="separator">
+                <span>OR</span>
+            </div>
+            <div class="social-login">
+                <a href="https://www.google.com" class="social-btn google">
+                    <i class="fab fa-google"></i>Sign Up with Google </a>
+                <a href="https://www.facebook.com" class="social-btn facebook">
+                    <i class="fab fa-facebook"></i>Sign Up with Facebook </a>
+            </div>
+            <p class="Login-link">
+                Already have an account? <a href="{{ url_for('login') }}">Login now</a>
+            </p>
+        </div>
+    </div>
+    <script> 
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signupForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+
+            signupForm.addEventListener('submit', (event) => {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    event.preventDefault();
+                    return;
+                }
+
+                if (!email || !password) {
+                    alert('Please fill out all fields.');
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

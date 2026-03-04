@@ -1,0 +1,69 @@
+backend/
+│
+├── src/
+│   ├── index.js                # ENTRY POINT 🚪
+│   ├── app.js                  # Express app setup
+│
+│   ├── config/                 # Configuration
+│   │   ├── db.js               # DB connection
+│   │   ├── env.js              # env loader
+│   │   └── constants.js
+│
+│   ├── models/                 # DATABASE TABLES 🗄️
+│   │   ├── User.js
+│   │   ├── Room.js
+│   │   ├── Bid.js
+│   │   ├── Order.js
+│   │   ├── Escrow.js
+│   │   ├── Wallet.js
+│   │   └── Transaction.js
+│
+│   ├── routes/                 # API ENDPOINTS 🚦
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   │   ├── room.routes.js
+│   │   ├── bid.routes.js
+│   │   ├── wallet.routes.js
+│   │   └── order.routes.js
+│
+│   ├── controllers/            # REQUEST HANDLERS 🧠
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   │   ├── room.controller.js
+│   │   ├── bid.controller.js
+│   │   └── wallet.controller.js
+│
+│   ├── services/               # BUSINESS LOGIC ⚙️
+│   │   ├── auth.service.js
+│   │   ├── room.service.js
+│   │   ├── bid.service.js
+│   │   ├── escrow.service.js
+│   │   └── wallet.service.js
+│
+│   ├── middleware/             # SECURITY & FILTERS 🛡️
+│   │   ├── auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── rateLimiter.js
+│
+│   ├── utils/                  # HELPERS 🧩
+│   │   ├── ulid.js
+│   │   ├── hash.js
+│   │   ├── validators.js
+│   │   └── logger.js
+│
+│   └── tests/                  # TESTS 🧪
+│       ├── bid.test.js
+│       └── wallet.test.js
+│
+├── prisma / migrations / sql   # DB layer (your choice)
+│
+├── seed/
+│   └── seed.sql
+│
+├── .env
+├── package.json
+└── README.md
+
+
+
+REMOVE sequelize.sync({ alter: true }) from app.js and replace with sequelize.sync() to prevent unintended schema changes in production.

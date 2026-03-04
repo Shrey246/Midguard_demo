@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Room - MidGuard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_room.css') }}">
+</head>
+<body>
+
+<nav class="sidebar close">
+  <header>
+    <div class="image-text">
+      <span class="image"><img src="{{ url_for('static', filename='static\css\images\MidGuard.png') }}" alt="MidGuard Logo"></span>
+      <div class="text logo-text">
+        <span class="name">MidGuard</span>
+        <span class="profession">Shop</span>
+      </div>
+    </div>
+    <i class='bx bx-chevron-left toggle'></i>
+  </header>
+
+  <div class="menu-bar">
+    <div class="menu">
+      <ul class="menu-links">
+        <li class="nav-link"><a href="{{ url_for('dashboard') }}" class="active"><i class='bx bx-store-alt icon'></i><span class="text nav-text">Discover</span></a></li>
+        <li class="nav-link"><a href="{{ url_for('orders') }}"><i class='bx bx-package icon'></i><span class="text nav-text">My Orders</span></a></li>
+        <li class="nav-link"><a href="#"><i class='bx bx-heart icon'></i><span class="text nav-text">Wishlist</span></a></li>
+        <li class="nav-link"><a href="{{ url_for('settings') }}"><i class='bx bx-cog icon'></i><span class="text nav-text">Settings</span></a></li>
+        <li class="nav-link"><a href="{{ url_for('policy') }}"><i class='bx bx-headphone icon'></i><span class="text nav-text">Support</span></a></li>
+      </ul>
+    </div>
+    <div class="bottom-content">
+      <li class="profile">
+        <a href="{{ url_for('signup') }}">
+          <div class="profile-details">
+             <i class='bx bx-user-circle icon'></i>
+              <img src="{{url_for('static', filename='static\css\images\MidGuard.png')}}" alt="Profile Picture">
+             <div class="text">
+               <span class="name">{{ user['name'] }}</span>
+                <span class="profession">{{ user['profession'] }}</span>
+              </div>
+            </div>
+          <i class='bx bx-log-in logout-icon'></i>
+        </a>
+      </li>
+      <li class="mode">
+        <div class="sun-moon"><i class='bx bx-moon icon moon'></i><i class='bx bx-sun icon sun'></i></div>
+        <span class="mode-text text">Dark Mode</span>
+        <div class="toggle-switch"><span class="switch"></span></div>
+      </li>
+    </div>
+  </div>
+</nav>
+
+<section class="home">
+  <header class="top-navbar">
+    <div class="navbar-content">
+      <div class="left-content">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle Sidebar"><i class='bx bx-menu'></i></button>
+        <div class="page-title">Create a New Room</div>
+      </div>
+      <div class="header-search-box">
+        <i class='bx bx-search icon'></i><input type="text" placeholder="Search...">
+      </div>
+      <div class="right-content">
+        <a href="#" class="nav-icon" aria-label="Cart"><i class='bx bx-cart'></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="form-container glass-card">
+      <h1 class="form-title">Create a New Room</h1>
+      <form action="{{ url_for('create_room') }}" method="POST" enctype="multipart/form-data" class="create-room-form">
+
+        <fieldset class="form-section">
+          <legend>Product Details</legend>
+          <div class="form-group">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" name="productName" placeholder="e.g., Samsung Galaxy Watch" required>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="5" placeholder="Provide a detailed description of your product..." required></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Condition & Pricing</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="usedDuration">Used Duration</label>
+              <input type="text" id="usedDuration" name="usedDuration" placeholder="e.g., 6 months" required>
+            </div>
+            <div class="form-group">
+              <label for="warrantyRemaining">Warranty Remaining</label>
+              <input type="text" id="warrantyRemaining" name="warrantyRemaining" placeholder="e.g., 3 months" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group radio-group">
+              <label>Box available?</label>
+              <div class="radio-options">
+                <input type="radio" id="boxYes" name="boxAvailable" value="Yes"><label for="boxYes">Yes</label>
+                <input type="radio" id="boxNo" name="boxAvailable" value="No"><label for="boxNo">No</label>
+              </div>
+            </div>
+            <div class="form-group radio-group">
+              <label>Invoice available?</label>
+              <div class="radio-options">
+                <input type="radio" id="invoiceYes" name="invoiceAvailable" value="Yes"><label for="invoiceYes">Yes</label>
+                <input type="radio" id="invoiceNo" name="invoiceAvailable" value="No"><label for="invoiceNo">No</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="price">Price</label>
+              <div class="price-input-group">
+                <select id="currency" name="currency"><option value="INR">₹</option><option value="USD">$</option></select>
+                <input type="number" id="price" name="price" placeholder="25,000" min="0" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="shippingCost">Shipping Cost</label>
+              <input type="number" id="shippingCost" name="shippingCost" placeholder="e.g., 150" min="0">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Media</legend>
+          <div class="form-group image-upload-group">
+            <label>Product images (up to 4)</label>
+            <div class="image-previews">
+              {% for i in range(4) %}
+              <div class="image-upload-placeholder"><input type="file" name="productImages" accept="image/*"><span><i class='bx bx-image-add'></i></span></div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="form-group image-upload-group">
+            <label>Invoice images (up to 3)</label>
+            <div class="image-previews">
+              {% for i in range(3) %}
+              <div class="image-upload-placeholder"><input type="file" name="invoiceImages" accept="image/*"><span><i class='bx bx-image-add'></i></span></div>
+              {% endfor %}
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-group terms-checkbox">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms">I agree to the <a href="{{ url_for('policy') }}#legal" target="_blank">Terms and Conditions</a></label>
+        </div>
+        <button type="submit" class="btn-primary submit-btn">Create Room</button>
+      </form>
+    </div>
+  </main>
+</section>
+
+<div id="backdrop" class="backdrop"></div>
+<script src="{{ url_for('static', filename='shop2.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+/* ===================================
+   MY ORDERS PAGE STYLES (Empty State)
+   =================================== */
+.empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 60vh;
+    padding: 40px;
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--toggle-color);
+    border-radius: 24px;
+}
+
+.empty-state-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    background-color: var(--primary-color-light);
+    border-radius: 50%;
+    margin-bottom: 30px;
+}
+
+.empty-state-icon i {
+    font-size: 5rem;
+    color: var(--primary-color);
+}
+
+.empty-state-container h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--text-color);
+}
+
+.empty-state-container p {
+    font-size: 1rem;
+    color: var(--muted-text-color);
+    margin-bottom: 30px;
+    max-width: 300px;
+}
+
+.empty-state-container .btn-primary {
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.empty-state-container .btn-primary .bx-cart {
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 500;
+}

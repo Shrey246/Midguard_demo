@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist - MidGuard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='shop2.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='wishlist.css') }}">
+</head>
+<body>
+
+  <nav class="sidebar close">
+    <header>
+      <div class="image-text">
+        <span class="image"><img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo"></span>
+        <div class="text logo-text"><span class="name">MidGuard</span><span class="profession">Shop</span></div>
+      </div>
+      <i class='bx bx-chevron-left toggle'></i>
+    </header>
+    <div class="menu-bar">
+      <div class="menu">
+        <ul class="menu-links">
+          <li class="nav-link"><a href="{{ url_for('shop') }}"><i class='bx bx-store-alt icon'></i><span class="text nav-text">Discover</span></a></li>
+          <li class="nav-link"><a href="{{ url_for('orders') }}"><i class='bx bx-package icon'></i><span class="text nav-text">My Orders</span></a></li>
+          <li class="nav-link"><a href="{{ url_for('wishlist') }}" class="active"><i class='bx bx-heart icon'></i><span class="text nav-text">Wishlist</span></a></li>
+          <li class="nav-link"><a href="{{ url_for('account') }}"><i class='bx bx-user icon'></i><span class="text nav-text">My Account</span></a></li>
+          <li class="nav-link"><a href="{{ url_for('settings') }}"><i class='bx bx-cog icon'></i><span class="text nav-text">Settings</span></a></li>
+          <li class="nav-link"><a href="{{ url_for('support') }}"><i class='bx bx-headphone icon'></i><span class="text nav-text">Support</span></a></li>
+        </ul>
+      </div>
+      <div class="bottom-content">
+        <li class="profile">
+          <a href="{{ url_for('account') }}">
+            <div class="profile-details">
+              <i class='bx bx-user-circle icon'></i>
+              <img src="https://placehold.co/40x40/695CFE/FFFFFF?text=BG" alt="Profile Picture">
+              <div class="text">
+                <span class="name">Logged User</span>
+              </div>
+            </div>
+            <i class='bx bx-log-in logout-icon'></i>
+          </a>
+        </li>
+        <li class="mode">
+          <div class="sun-moon"><i class='bx bx-moon icon moon'></i><i class='bx bx-sun icon sun'></i></div>
+          <span class="mode-text text">Dark Mode</span>
+          <div class="toggle-switch"><span class="switch"></span></div>
+        </li>
+      </div>
+    </div>
+  </nav>
+
+  <section class="home">
+    <header class="top-navbar">
+      <div class="navbar-content">
+        <div class="left-content">
+          <button class="menu-btn" id="menuBtn" aria-label="Toggle Sidebar"><i class='bx bx-menu'></i></button>
+          <div class="page-title">My Wishlist</div>
+        </div>
+        <div class="header-search-box">
+          <i class='bx bx-search icon'></i><input type="text" placeholder="Search your wishlist...">
+        </div>
+        <div class="right-content">
+          <a href="{{ url_for('account') }}" class="nav-icon" aria-label="Account"><i class='bx bx-user-circle'></i></a>
+          <a href="{{ url_for('cart') }}" class="nav-icon" aria-label="Cart"><i class='bx bx-cart'></i></a>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content watchlist-page">
+      <div class="watchlist-grid">
+        {% if items|length == 0 %}
+          <p>No items yet. <a href="{{ url_for('shop') }}">Click to add</a></p>
+        {% else %}
+          {% for item in items %}
+            <div class="product-card card">
+              <button class="remove-btn" aria-label="Remove from wishlist"><i class='bx bx-x'></i></button>
+              <div class="card-image-container">
+                <img src="{{ item['image_url'] }}" alt="{{ item['name'] }}">
+              </div>
+              <div class="card-body">
+                <h3>{{ item['name'] }}</h3>
+                <span class="price">₹{{ item['price'] }}</span>
+                <button class="btn-primary full-width">Move to Cart</button>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </main>
+  </section>
+
+  <div id="backdrop" class="backdrop"></div>
+  <script src="{{ url_for('static', filename='shop2.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy & Legal - MidGuard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/policy.css') }}" />
+</head>
+<body>
+
+    <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image"><img src="{{ url_for('static', filename='css/images/MidGuard.png') }}" alt="MidGuard Logo" /></span>
+                <div class="text logo-text">
+                    <span class="name">MidGuard</span>
+                    <span class="profession">Shop</span>
+                </div>
+            </div>
+            <i class="bx bx-chevron-left toggle"></i>
+        </header>
+        <div class="menu-bar">
+            <div class="menu">
+                <ul class="menu-links">
+                    <li class="nav-link"><a href="{{ url_for('login') }}"><i class="bx bx-store-alt icon"></i><span class="text nav-text">Discover</span></a></li>
+                    <li class="nav-link"><a href="{{ url_for('orders') }}"><i class="bx bx-package icon"></i><span class="text nav-text">My Orders</span></a></li>
+                    <li class="nav-link"><a href="{{ url_for('wishlist') }}"><i class="bx bx-heart icon"></i><span class="text nav-text">Wishlist</span></a></li>
+                    <li class="nav-link"><a href="{{ url_for('settings') }}"><i class="bx bx-cog icon"></i><span class="text nav-text">Settings</span></a></li>
+                    <li class="nav-link"><a href="{{ url_for('policy') }}" class="active"><i class="bx bx-headphone icon"></i><span class="text nav-text">Support</span></a></li>
+                </ul>
+            </div>
+            <div class="bottom-content">
+                <li class="profile">
+                    <a href="{{ url_for('signup') }}">
+                        <div class="profile-details">
+                            <i class="bx bx-user-circle icon"></i>
+                            <img src="https://placehold.co/40x40/695CFE/FFFFFF?text=BG" alt="Profile Picture" />
+                            <div class="text">
+                                <span class="name">Baibhab Ghosh</span>
+                                <span class="profession">Shop</span>
+                            </div>
+                        </div>
+                        <i class="bx bx-log-in logout-icon"></i>
+                    </a>
+                </li>
+                <li class="mode">
+                    <div class="sun-moon"><i class="bx bx-moon icon moon"></i><i class="bx bx-sun icon sun"></i></div>
+                    <span class="mode-text text">Dark Mode</span>
+                    <div class="toggle-switch"><span class="switch"></span></div>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+    <section class="home">
+        <header class="top-navbar">
+            <div class="navbar-content">
+                <div class="left-content">
+                    <button class="menu-btn" id="menuBtn" aria-label="Toggle Sidebar"><i class="bx bx-menu"></i></button>
+                    <div class="page-title">Privacy & Legal</div>
+                </div>
+                <div class="header-search-box">
+                    <i class="bx bx-search icon"></i>
+                    <input type="text" placeholder="Search..." />
+                </div>
+                <div class="right-content">
+                    <a href="{{ url_for('account') }}" class="nav-icon" aria-label="Account"><i class="bx bx-user-circle"></i></a>
+                    <a href="{{ url_for('cart') }}" class="nav-icon" aria-label="Cart"><i class="bx bx-cart"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="tabs-container">
+                <button class="tab-btn active" data-target="privacy">Privacy Policy</button>
+                <button class="tab-btn" data-target="legal">Legal & Terms</button>
+            </div>
+
+            <section id="privacy" class="policy-card card active">
+                <h2>Privacy Policy</h2>
+                <div class="policy-content scrollable">
+                    <h4>1. Information We Collect</h4>
+                    <p>We collect information you provide directly to us, such as when you create an account, place an order, or contact customer support. This may include your name, email address, postal address, phone number, and payment information.</p>
+
+                    <h4>2. Use of Information</h4>
+                    <p>Your data is used to process transactions, manage your account, improve our services, and personalize your shopping experience. We do not sell or share your personal information with third-party marketers.</p>
+
+                    <h4>3. Data Protection</h4>
+                    <p>We implement a variety of security measures, including SSL encryption, to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information.</p>
+                </div>
+            </section>
+
+            <section id="legal" class="policy-card card">
+                <h2>Legal & Terms</h2>
+                <div class="policy-content scrollable">
+                    <h4>1. Acceptance of Terms</h4>
+                    <p>By accessing and using the MidGuard website, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p>
+
+                    <h4>2. User Responsibilities</h4>
+                    <p>You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer. You agree to accept responsibility for all activities that occur under your account or password.</p>
+
+                    <h4>3. Intellectual Property</h4>
+                    <p>All content included on the site, such as text, graphics, logos, images, as well as the compilation thereof, and any software used on the site, is the property of MidGuard or its suppliers and protected by copyright and other laws.</p>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <div id="backdrop" class="backdrop"></div>
+    <script src="{{ url_for('static', filename='shop2.js') }}"></script>
+</body>
+</html>

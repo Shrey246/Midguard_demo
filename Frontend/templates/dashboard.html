@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MidGuard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="left-wrap">
+        <button id="menuBtn" class="menu-btn" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="false">☰</button>
+        <div class="logo-title">
+          <a href="{{ url_for('dashboard') }}" class="logo"><img src="{{ url_for('static', filename='css/images/MidGuard.png') }}" alt="Logo"/></a>
+          <div class="shop-name">MidGuard</div>
+        </div>
+      </div>
+      <div class="search-box">
+        <form action="#" method="get">
+          <input id="search" type="search" placeholder="Search products..." />
+          <span class="search-icon">🔍</span>
+        </form>
+      </div>
+      <div class="nav-buttons">
+        <a href="{{ url_for('account') }}" class="icon-btn">👤</a>
+        <a href="{{ url_for('settings') }}" class="icon-btn">⚙️</a>
+        <a href="{{ url_for('cart') }}" class="icon-btn">🛒</a>
+        <button class="icon-btn theme-toggle" id="themeToggle" aria-pressed="false">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <aside id="sidebar" class="sidebar" aria-hidden="true">
+    <div class="profile">
+      <div class="profile-icon">👤</div>
+      <h3>{{ user.name }}</h3>
+      <p>{{ user.email }}</p>
+    </div>
+    <nav class="side-links">
+      <a href="{{ url_for('orders') }}">📦 My Orders</a>
+      <a href="{{ url_for('wishlist') }}">❤ Wishlist</a>
+      <a href="{{ url_for('account') }}">👤 My Account</a>
+      <a href="#">📍 Saved Addresses</a>
+      <a href="#">🧰 Services</a>
+      <a href="#">❓ Help</a>
+      <a href="#">🚪 Login/Logout</a>
+    </nav>
+  </aside>
+
+  <main id="mainContent">
+    <section class="hero">
+      <h1>Welcome to MidGuard</h1>
+      <p>Discover curated picks and fresh deals—updated daily.</p>
+    </section>
+
+    <section class="product-grid">
+      {% for product in products %}
+      <div class="product-card">
+        <div class="room-id">Room ID: {{ product.room_id }}</div>
+        <div class="product-image">
+          <img src="{{ url_for('static', filename=css\images\MidGuard.png) }}">
+        </div>
+        <div class="product-body">
+          <h3>{{ product.name }}</h3>
+          <span class="price">₹{{ product.price }}</span>
+          <div class="actions">
+            <button class="btn primary">Add to Cart</button>
+            <button class="btn ghost favorite-btn">♡</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+  </main>
+
+  <button data-ico="￫" class="book-call-btn"><span>Create Room</span></button>
+  <button data-ico="￫" class="book-join-btn"><span>Join Room</span></button>
+  <div id="backdrop" class="backdrop" hidden></div>
+
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("backdrop");
+
+    function toggleSidebar() {
+      sidebar.classList.toggle("open");
+      sidebar.setAttribute("aria-hidden", !sidebar.classList.contains("open"));
+      backdrop.hidden = !sidebar.classList.contains("open");
+    }
+
+    menuBtn.addEventListener("click", toggleSidebar);
+    backdrop.addEventListener("click", toggleSidebar);
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && sidebar.classList.contains("open")) {
+        toggleSidebar();
+      }
+    });
+
+    function applyTheme(darkMode) {
+      document.documentElement.classList.toggle("theme-dark", darkMode);
+      themeToggle.setAttribute("aria-pressed", String(darkMode));
+      themeToggle.textContent = darkMode ? "🌞" : "🌙";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.contains("theme-dark");
+      applyTheme(!isDark);
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+    });
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark" || (savedTheme !== "light" && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      applyTheme(true);
+    }
+
+    const favoriteButtons = document.querySelectorAll(".favorite-btn");
+    favoriteButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("active");
+        button.textContent = button.classList.contains("active") ? "❤️" : "♡";
+      });
+    });
+  </script>
+</body>
+</html>

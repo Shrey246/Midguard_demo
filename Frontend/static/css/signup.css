@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #6a11cb;
+    --secondary-color: #2575fc;
+    --text-color: #ffffff; 
+    --white: #ffffff;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --input-text-color: #ffffff; /* NEW: Define input text color as black */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-color);
+}
+
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ff2525, #ffb325);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.Signup-container {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 40px;
+    z-index: 1;
+}
+
+.Signup-box h2 {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.Signup-box p {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    /* CHANGED: Text color for typed input to black */
+    color: var(--input-text-color); 
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--white);
+}
+
+.input-group input::placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.Signup-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.Signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.separator {
+    text-align: center;
+    margin: 30px 0;
+    color: #ccc;
+    position: relative;
+}
+
+.separator span {
+    background: #ffffff7d;
+    color: black;
+    border-radius: 10px;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.separator::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 0;
+}
+
+.social-login .social-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    text-decoration: none;
+    color: var(--white);
+}
+
+.social-login .social-btn i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.social-btn:hover { 
+    background-color: rgba(255, 255, 255, 0.2); 
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.social-btn.facebook { 
+    color: var(--white); 
+}
+
+.Login-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.Login-link a {
+    color: var(--white);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.Login-link a:hover {
+    text-decoration: underline;
+}
+
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+.success {
+  color: green;
+}
+.error {
+  color: red;
+}

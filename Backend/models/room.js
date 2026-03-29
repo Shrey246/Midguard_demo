@@ -60,11 +60,24 @@ module.exports = (sequelize, DataTypes) => {
       room_type: {
       type: DataTypes.ENUM('auction', 'public', 'private', 'digital'),
       allowNull: false,
-      defaultValue: 'auction',
+      defaultValue: 'public',
       },
 
+      end_time: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      },
 
-      listing_status: {
+      auction_duration_hours:{
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+
+      room_password_hash:{
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
+      listing_status:{
         type: DataTypes.ENUM(
           'draft',
           'active',
@@ -75,6 +88,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'draft',
       },
+
     },
     {
       tableName: 'rooms',

@@ -1,14 +1,10 @@
 const { verifyToken } = require('../utils/jwt');
+const { BlacklistedToken } = require('../models');
 
-/**
- * Vanguard Auth Guard
- * Blocks all unauthenticated access
- */
-const authGuard = (req, res, next) => {
+const authGuard = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
-    // No token
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
@@ -18,19 +14,47 @@ const authGuard = (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
 
-    // Verify token + expiry
+    // 🔥 First check blacklist (faster fail)
+    const isBlacklisted = await BlacklistedToken.findOne({
+      where: { token }
+    });
+
+    if (isBlacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Session expired. Please login again."
+      });
+    }
+
+    // Then verify token
     const decoded = verifyToken(token);
 
-    // Attach user identity to request
+    if (!decoded || !decoded.publicId) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token payload"
+      });
+    }
+
     req.user = decoded;
 
-    next(); // allow request
+    next();
   } catch (error) {
+    console.error("Auth error:", error.message);
+
+    let message = "Authentication failed";
+
+    if (error.name === "TokenExpiredError") {
+      message = "Session expired. Please login again.";
+    } else if (error.name === "JsonWebTokenError") {
+      message = "Invalid token";
+    }
+
     return res.status(401).json({
       success: false,
-      message: 'Session expired. Please login again.'
+      message
     });
   }
 };
-//the changes
+
 module.exports = authGuard;

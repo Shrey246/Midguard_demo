@@ -1,4 +1,3 @@
-// backend/models/escrow.js
 module.exports = (sequelize, DataTypes) => {
   const Escrow = sequelize.define(
     'Escrow',
@@ -10,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       session_id: {
-        type: DataTypes.CHAR(36),
+        type: DataTypes.CHAR(26), // ✅ FIXED (ULID)
         allowNull: false,
         unique: true,
       },
@@ -52,73 +51,52 @@ module.exports = (sequelize, DataTypes) => {
 
       currency: {
         type: DataTypes.ENUM('INR', 'USD', 'EUR'),
-        allowNull: false,
         defaultValue: 'INR',
       },
 
       escrow_status: {
         type: DataTypes.ENUM(
-          'initiated',
+          'holding',
           'funds_received',
           'in_transit',
           'delivered',
-          'completed',
+          'released',
           'disputed',
           'refunded',
           'cancelled'
         ),
-        allowNull: false,
-        defaultValue: 'initiated',
+        defaultValue: 'holding',
       },
 
       seller_dispatched: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
       },
 
       buyer_received: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
       },
 
       buyer_approved: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
       },
 
       dispute_raised: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
       },
 
       dispute_reason: {
         type: DataTypes.TEXT,
-        allowNull: true,
       },
 
-      incoming_payment_reference: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-      },
+      incoming_payment_reference: DataTypes.STRING(100),
+      outgoing_payment_reference: DataTypes.STRING(100),
 
-      outgoing_payment_reference: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-      },
-
-      funds_received_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
-
-      closed_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
+      funds_received_at: DataTypes.DATE,
+      closed_at: DataTypes.DATE,
     },
     {
       tableName: 'escrow',

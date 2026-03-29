@@ -1,7 +1,8 @@
 // backend/controllers/auctioncontroller.js
 
 const AuctionService = require('../services/auctionservice');
-
+const OrderService = require('../services/orderservice'); // 🔥 NEW
+const { Room } = require('../models');
 class AuctionController {
 
   // Seller closes auction
@@ -9,7 +10,20 @@ class AuctionController {
     try {
       const { roomUid } = req.params;
 
-      const result = await AuctionService.closeAuction(roomUid);
+      const room = await Room.findOne({
+          where: { room_uid: roomUid }
+        });
+
+        if (!room) {
+          return res.status(404).json({ error: "ROOM_NOT_FOUND" });
+        }
+
+        // 🔒 Only seller can close
+        if (room.seller_public_id !== req.user.publicId) {
+          return res.status(403).json({ error: "NOT_AUTHORIZED" });
+        }
+
+        const result = await AuctionService.closeAuction(roomUid);
 
       return res.status(200).json({
         success: true,
@@ -27,17 +41,26 @@ class AuctionController {
   static async confirmWinningBid(req, res) {
     try {
       const { bidUid } = req.params;
+      const buyerPublicId = req.user.publicId;
 
-      const result = await AuctionService.confirmWinningBid(
+      // 1️⃣ Validate via AuctionService
+      const data = await AuctionService.confirmWinningBid(
         bidUid,
-        req.user.publicId,
-        req.body.address_uid
+        buyerPublicId
       );
+
+      // 2️⃣ Create order via OrderService
+      const result = await OrderService.createFromWinningBid({
+        ...data,
+        buyer_public_id: buyerPublicId,
+        address_uid: req.body.address_uid
+      });
 
       return res.status(200).json({
         success: true,
         data: result
       });
+
     } catch (err) {
       return res.status(400).json({
         success: false,
@@ -65,25 +88,31 @@ class AuctionController {
     }
   }
 
-    // POST /rooms/:roomUid/buy
+  // Buy Now (fixed price)
   static async buyNow(req, res) {
     try {
       const { roomUid } = req.params;
       const buyerPublicId = req.user.publicId;
-      const { address_uid } = req.body;
 
-      if (!address_uid) {
+      if (!req.body.address_uid) {
         return res.status(400).json({
           success: false,
           error: 'ADDRESS_REQUIRED'
         });
       }
 
-      const result = await AuctionService.buyNow(
+      // 1️⃣ Validate via AuctionService
+      const data = await AuctionService.buyNow(
         roomUid,
-        buyerPublicId,
-        address_uid
+        buyerPublicId
       );
+
+      // 2️⃣ Create order via OrderService
+      const result = await OrderService.createFromBuyNow({
+        ...data,
+        buyer_public_id: buyerPublicId,
+        address_uid: req.body.address_uid
+      });
 
       return res.status(201).json({
         success: true,
@@ -97,31 +126,6 @@ class AuctionController {
       });
     }
   }
-
-    // POST /escrow/:sessionId/release
-  static async releaseEscrow(req, res) {
-    try {
-      const { sessionId } = req.params;
-      const buyerPublicId = req.user.publicId;
-
-      const result = await AuctionService.releaseEscrow(
-        sessionId,
-        buyerPublicId
-      );
-
-      return res.status(200).json({
-        success: true,
-        data: result
-      });
-
-    } catch (err) {
-      return res.status(400).json({
-        success: false,
-        error: err.message
-      });
-    }
-  }
-
 
 }
 

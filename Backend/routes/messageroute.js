@@ -3,16 +3,16 @@ const router = express.Router();
 const MessageController = require("../controllers/messagecontroller");
 const authguard = require("../vanguard/authguard");
 
-router.post(
-  "/sessions/:sessionUid/messages/text",
-  authguard,
-  MessageController.sendText
-);
-
 router.get(
-  "/sessions/:sessionUid/messages",
+  "/:session_id/messages",
   authguard,
   MessageController.getMessages
+);
+
+router.post(
+  "/:session_id/messages/text",
+  authguard,
+  MessageController.sendText
 );
 
 module.exports = router;

@@ -1,16 +1,17 @@
-// backend/models/order.js
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
     'Order',
     {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+
+      order_uid: {
+        type: DataTypes.CHAR(26),
+        primaryKey: true, // ✅ FIX
+        allowNull: false,
+        unique: true,
       },
 
       session_id: {
-        type: DataTypes.CHAR(36),
+        type: DataTypes.CHAR(26), // ✅ match ULID
         allowNull: false,
         unique: true,
       },
@@ -57,7 +58,6 @@ module.exports = (sequelize, DataTypes) => {
           'completed',
           'cancelled'
         ),
-        allowNull: false,
         defaultValue: 'created',
       },
 
@@ -67,7 +67,6 @@ module.exports = (sequelize, DataTypes) => {
           'confirmed',
           'rejected'
         ),
-        allowNull: false,
         defaultValue: 'pending',
       },
 
@@ -78,19 +77,49 @@ module.exports = (sequelize, DataTypes) => {
           'released',
           'refunded'
         ),
-        allowNull: false,
         defaultValue: 'pending',
       },
 
       payment_reference_id: {
         type: DataTypes.STRING(100),
-        allowNull: true,
       },
 
       completed_at: {
         type: DataTypes.DATE,
-        allowNull: true,
       },
+
+      trade_status: {
+        type: DataTypes.ENUM(
+          "initiated",
+          "awaiting_buyer_approval",
+          "escrow_active",
+          "delivery_in_progress",
+          "delivery_confirmed",
+          "completed",
+          "disputed",
+          "cancelled"
+        ),
+        defaultValue: "initiated"
+      },
+
+      shipping_status: {
+        type: DataTypes.ENUM(
+          "not_shipped",
+          "shipped",
+          "delivered"
+        ),
+        defaultValue: "not_shipped"
+      },
+
+      courier_name: DataTypes.STRING,
+      tracking_link: DataTypes.TEXT,
+      shipped_at: DataTypes.DATE,
+
+      digital_delivery_confirmed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      }
+
     },
     {
       tableName: 'orders',

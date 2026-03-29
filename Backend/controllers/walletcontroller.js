@@ -23,7 +23,7 @@ class WalletController {
     }
   }
 
-  // POST /wallet/topup  (MOCK)
+  // POST /wallet/topup
   static async topUp(req, res) {
     try {
       const { amount } = req.body;
@@ -41,6 +41,26 @@ class WalletController {
       return res.status(400).json({
         success: false,
         error: err.message
+      });
+    }
+  }
+
+  // ✅ FIXED: GET /wallet/ledger
+  static async getLedger(req, res) {
+    try {
+     const userId = req.user.publicId;
+
+      const transactions = await WalletService.getLedger(userId);
+
+      return res.status(200).json({
+        success: true,
+        transactions,
+      });
+    } catch (err) {
+      console.error("Ledger Error:", err);
+      return res.status(500).json({
+        success: false,
+        message: err.message,
       });
     }
   }

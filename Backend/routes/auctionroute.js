@@ -1,28 +1,19 @@
-// backend/routes/auctionroute.js
-const authguard = require('../vanguard/authguard');
 const express = require('express');
 const router = express.Router();
 
 const authGuard = require('../vanguard/authguard');
 const AuctionController = require('../controllers/auctioncontroller');
 
-// All auction routes require authentication
+// Protect all routes
 router.use(authGuard);
 
-// Seller closes auction for a room
+// Seller closes auction
 router.post('/close/:roomUid', AuctionController.closeAuction);
 
 // Buyer confirms winning bid
 router.post('/confirm/:bidUid', AuctionController.confirmWinningBid);
 
-// Buyer rejects / system expires bid
+// Buyer rejects or expires bid
 router.post('/reject/:bidUid', AuctionController.rejectOrExpireBid);
-
-//buyer search for a room and buy it public room
-router.post('/rooms/:roomUid/buy',authguard,AuctionController.buyNow);
-
-// Seller releases escrow after order completion
-router.post('/escrow/:sessionId/release',authguard,AuctionController.releaseEscrow);
-
 
 module.exports = router;

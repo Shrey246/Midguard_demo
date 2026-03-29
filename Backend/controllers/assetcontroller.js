@@ -10,9 +10,9 @@ class AssetController {
         contextType: req.body.context_type,
         contextId: req.body.context_id,
         purpose: req.body.purpose,
-        fileUrl: req.body.file_url,
-        fileType: req.body.file_type,
-        fileSize: req.body.file_size,
+        fileUrl: `http://localhost:5000/uploads/${req.file.filename}`,
+        fileType: req.file.mimetype,
+        fileSize: req.file.size,
         isPrimary: req.body.is_primary || false,
       });
 

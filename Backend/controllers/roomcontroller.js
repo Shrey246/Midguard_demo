@@ -1,8 +1,10 @@
 // controllers/roomcontroller.js
+
 const RoomService = require('../services/roomservice');
 
 class RoomController {
-  // POST /rooms
+
+  // 1️⃣ CREATE ROOM
   static async createRoom(req, res) {
     try {
       const room = await RoomService.createRoom(
@@ -14,6 +16,7 @@ class RoomController {
         success: true,
         data: room,
       });
+
     } catch (err) {
       return res.status(400).json({
         success: false,
@@ -22,7 +25,7 @@ class RoomController {
     }
   }
 
-  // GET /rooms/:roomUid
+  // 2️⃣ GET ROOM
   static async getRoom(req, res) {
     try {
       const room = await RoomService.getRoomByUid(req.params.roomUid);
@@ -31,6 +34,7 @@ class RoomController {
         success: true,
         data: room,
       });
+
     } catch (err) {
       return res.status(404).json({
         success: false,
@@ -39,15 +43,18 @@ class RoomController {
     }
   }
 
-  // GET /rooms
+  // 3️⃣ LIST ACTIVE ROOMS
   static async listActiveRooms(req, res) {
     try {
-      const rooms = await RoomService.listActiveRooms();
+      const { type } = req.query;
+
+      const rooms = await RoomService.listActiveRooms(type);
 
       return res.status(200).json({
         success: true,
         data: rooms,
       });
+
     } catch (err) {
       return res.status(500).json({
         success: false,
@@ -56,7 +63,7 @@ class RoomController {
     }
   }
 
-  // POST /rooms/:roomUid/activate
+  // 4️⃣ ACTIVATE ROOM
   static async activateRoom(req, res) {
     try {
       const room = await RoomService.activateRoom(
@@ -68,6 +75,7 @@ class RoomController {
         success: true,
         data: room,
       });
+
     } catch (err) {
       return res.status(400).json({
         success: false,
@@ -76,7 +84,7 @@ class RoomController {
     }
   }
 
-  // POST /rooms/:roomUid/cancel
+  // 5️⃣ CANCEL ROOM
   static async cancelRoom(req, res) {
     try {
       const room = await RoomService.cancelRoom(
@@ -88,6 +96,7 @@ class RoomController {
         success: true,
         data: room,
       });
+
     } catch (err) {
       return res.status(400).json({
         success: false,
@@ -96,27 +105,29 @@ class RoomController {
     }
   }
 
-// POST /rooms/:roomUid/join
-static async joinPrivateRoom(req, res) {
-  try {
-    const session = await RoomService.joinPrivateRoom(
-      req.params.roomUid,
-      req.user.publicId
-    );
+  // 6️⃣ JOIN PRIVATE ROOM (FIXED ✅)
+  static async joinPrivateRoom(req, res) {
+    try {
+      const { password } = req.body;
 
-    return res.status(200).json({
-      success: true,
-      data: session
-    });
+      const session = await RoomService.joinPrivateRoom(
+        req.params.roomUid,
+        req.user.publicId,
+        password
+      );
 
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      error: err.message
-    });
+      return res.status(200).json({
+        success: true,
+        data: session,
+      });
+
+    } catch (err) {
+      return res.status(400).json({
+        success: false,
+        error: err.message,
+      });
+    }
   }
-}
-
 
 }
 

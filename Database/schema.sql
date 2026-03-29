@@ -147,6 +147,17 @@ CREATE TABLE orders (
 
     payment_reference_id VARCHAR(100),
 
+    trade_status ENUM(
+            "initiated",
+            "awaiting_buyer_approval",
+            "escrow_active",
+            "delivery_in_progress",
+            "delivery_confirmed",
+            "completed",
+            "disputed",
+            "cancelled"
+    ) NOT NULL DEFAULT 'initiated',
+
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP NULL,
 

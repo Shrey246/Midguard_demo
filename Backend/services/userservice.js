@@ -4,8 +4,9 @@ const { User, Wallet } = require('../models');
 const { ulid } = require('ulid');
 const { generateToken } = require('../utils/jwt');
 const bcrypt = require('bcrypt');
-
-
+const notificationService = require("./notificationservice");
+const jwt = require("jsonwebtoken");
+const { BlacklistedToken } = require("../models");
 
 /**
  * Generate base username from full name
@@ -100,6 +101,14 @@ const registerUser = async (data) => {
   locked_balance: 0
 });
 
+await notificationService.createNotification(
+  user.publicId,
+  "welcome",
+  "Welcome to MidGuard",
+  "Your account has been successfully created. You can now start trading securely.",
+  "user",
+  user.publicId
+ );
 
   return {
     publicId: user.publicId,
@@ -157,14 +166,36 @@ return {
     email: user.email
   }
 };
+};
 
+/**
+ * LOGOUT: blacklist token
+ */
+const logoutUser = async (token) => {
+  if (!token) {
+    throw new Error("Token required");
+  }
+
+  const decoded = jwt.decode(token);
+
+  if (!decoded || !decoded.exp) {
+    throw new Error("Invalid token");
+  }
+
+  await BlacklistedToken.create({
+    token,
+    expiresAt: new Date(decoded.exp * 1000)
+  });
+
+  return true;
 };
 
 module.exports = {
   registerUser,
   updateUserProfile,
   getUserByEmail,
-  loginUser
+  loginUser,
+  logoutUser,
 };
 
 console.log('User model:', User);

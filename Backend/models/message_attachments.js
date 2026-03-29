@@ -6,12 +6,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.CHAR(26),
         allowNull: false,
         unique: true,
+        primaryKey: true, // ✅ FIX
       },
       message_uid: {
         type: DataTypes.CHAR(26),
         allowNull: false,
       },
-      session_uid: {
+      session_id: {
         type: DataTypes.CHAR(26),
         allowNull: false,
       },
@@ -34,9 +35,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: "message_attachments",
-      timestamps: false,
+      timestamps: true,
+      createdAt: "created_at",
+      updatedAt: false,
     }
   );
+
+  MessageAttachment.associate = (models) => {
+    MessageAttachment.belongsTo(models.Message, {
+      foreignKey: "message_uid",
+      targetKey: "message_uid",
+      as: "message",
+    });
+  };
 
   return MessageAttachment;
 };

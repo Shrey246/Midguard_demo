@@ -1,8 +1,7 @@
 const {
   Message,
   MessageAttachment,
-  Session,
-  SessionParticipant
+  Escrow
 } = require("../models");
 
 const { ulid } = require("ulid");
@@ -10,47 +9,48 @@ const { ulid } = require("ulid");
 class MessageService {
 
   // =========================
-  // INTERNAL HELPERS
+  // HELPERS
   // =========================
 
   static _clean(value) {
     return typeof value === "string" ? value.trim() : value;
   }
 
-  static async _getSessionOrThrow(sessionUid) {
-    const session = await Session.findOne({
-      where: { session_uid: this._clean(sessionUid) }
+  static _toPlain(message) {
+    if (!message) return null;
+    return message.get ? message.get({ plain: true }) : message;
+  }
+
+  // ✅ ONLY ESCROW VALIDATION
+  static async _getEscrowOrThrow(sessionUid) {
+    const escrow = await Escrow.findOne({
+      where: { session_id: this._clean(sessionUid) }
     });
 
-    if (!session) {
-      throw new Error("Session not found");
-    }
+    if (!escrow) throw new Error("Session not found");
 
-    if (session.status !== "active") {
+    if (
+      escrow.escrow_status === "cancelled" ||
+      escrow.escrow_status === "completed"
+    ) {
       throw new Error("Session is closed");
     }
 
-    return session;
+    return escrow;
   }
 
-  static async _ensureParticipant(sessionUid, senderId) {
-    const participant = await SessionParticipant.findOne({
-      where: {
-        session_uid: this._clean(sessionUid),
-        user_public_id: this._clean(senderId)
-      }
-    });
-
-if (!participant) {
-  throw new Error("Not a session participant");
-}
-
-
-    return participant;
+  // ✅ VALIDATE USER USING ESCROW (NO PARTICIPANT TABLE)
+  static _ensureUserInEscrow(escrow, senderId) {
+    if (
+      escrow.buyer_public_id !== senderId &&
+      escrow.seller_public_id !== senderId
+    ) {
+      throw new Error("Not allowed in this session");
+    }
   }
 
   // =========================
-  // MESSAGE CREATION CORE
+  // CORE CREATION
   // =========================
 
   static async _createMessage({
@@ -58,59 +58,66 @@ if (!participant) {
     senderId,
     messageType,
     body = null,
-    bypassParticipantCheck = false
+    bypassUserCheck = false
   }) {
-    await this._getSessionOrThrow(sessionUid);
+    const escrow = await this._getEscrowOrThrow(sessionUid);
 
-    if (!bypassParticipantCheck) {
-      await this._ensureParticipant(sessionUid, senderId);
+    if (!bypassUserCheck) {
+      this._ensureUserInEscrow(escrow, senderId);
     }
 
     const message = await Message.create({
       message_uid: ulid(),
-      session_uid: this._clean(sessionUid),
+      session_id: this._clean(sessionUid),
       sender_public_id: this._clean(senderId),
       message_type: messageType,
       body
     });
 
-    return message;
+    return this._toPlain(message);
   }
 
   // =========================
   // PUBLIC METHODS
   // =========================
 
-  // ---- TEXT MESSAGE ----
   static async sendTextMessage({ sessionUid, senderId, body }) {
     if (!body || body.trim().length === 0) {
       throw new Error("Message body cannot be empty");
     }
 
-    return this._createMessage({
+    const message = await this._createMessage({
       sessionUid,
       senderId,
       messageType: "text",
       body
     });
+
+    return {
+      message,
+      attachments: []
+    };
   }
 
-  // ---- SYSTEM MESSAGE ----
   static async sendSystemMessage(sessionUid, body) {
     if (!body || body.trim().length === 0) {
       throw new Error("System message body cannot be empty");
     }
 
-    return this._createMessage({
+    const message = await this._createMessage({
       sessionUid,
       senderId: "SYSTEM",
       messageType: "system",
       body,
-      bypassParticipantCheck: true
+      bypassUserCheck: true
     });
+
+    return {
+      message,
+      attachments: []
+    };
   }
 
-  // ---- ATTACHMENT MESSAGE (IMAGE / DOCUMENT) ----
   static async sendAttachmentMessage({
     sessionUid,
     senderId,
@@ -136,7 +143,7 @@ if (!participant) {
     const attachmentRow = await MessageAttachment.create({
       attachment_uid: ulid(),
       message_uid: message.message_uid,
-      session_uid: this._clean(sessionUid),
+      session_id: this._clean(sessionUid),
       file_name: fileName,
       file_path: filePath,
       mime_type: mimeType,
@@ -145,17 +152,20 @@ if (!participant) {
 
     return {
       message,
-      attachment: attachmentRow
+      attachments: [this._toPlain(attachmentRow)]
     };
   }
 
-  // ---- FETCH MESSAGES ----
+  // =========================
+  // FETCH
+  // =========================
+
   static async getMessages(sessionUid) {
-    await this._getSessionOrThrow(sessionUid);
+    await this._getEscrowOrThrow(sessionUid);
 
     const messages = await Message.findAll({
       where: {
-        session_uid: this._clean(sessionUid)
+        session_id: this._clean(sessionUid)
       },
       include: [
         {
@@ -163,10 +173,10 @@ if (!participant) {
           as: "attachments"
         }
       ],
-      order: [["id", "ASC"]]
+      order: [["created_at", "ASC"]]
     });
 
-    return messages;
+    return messages.map((m) => this._toPlain(m));
   }
 }
 

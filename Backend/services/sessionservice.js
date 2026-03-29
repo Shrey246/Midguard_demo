@@ -1,18 +1,19 @@
 const { Session, SessionParticipant } = require("../models");
 const { ulid } = require("ulid");
+const notificationService = require("./notificationservice");
 
 class SessionService {
   static async createSession({ sessionType, createdBy, participants }) {
     const sessionUid = ulid();
 
     const session = await Session.create({
-      session_uid: sessionUid,
+      session_id: sessionUid,
       session_type: sessionType,
       created_by: createdBy,
     });
 
     const participantRows = participants.map((p) => ({
-      session_uid: sessionUid,
+      session_id: sessionUid,
       user_public_id: p.userPublicId,
       role: p.role,
     }));
@@ -20,7 +21,7 @@ class SessionService {
     await SessionParticipant.bulkCreate(participantRows);
 
     return {
-      session_uid: sessionUid,
+      session_id: sessionUid,
       session_type: sessionType,
       status: session.status,
       participants: participantRows,
@@ -29,7 +30,7 @@ class SessionService {
 
   static async getSession(sessionUid) {
     const session = await Session.findOne({
-      where: { session_uid: sessionUid },
+      where: { session_id: sessionUid },
       include: [
         {
           model: SessionParticipant,
@@ -56,7 +57,7 @@ class SessionService {
 
   static async closeSession(sessionUid, requesterPublicId) {
     const session = await Session.findOne({
-      where: { session_uid: sessionUid },
+      where: { session_id: sessionUid },
     });
 
     if (!session) {
@@ -74,6 +75,20 @@ class SessionService {
     session.status = "closed";
     await session.save();
 
+    const participants = await SessionParticipant.findAll({
+  where: { session_id: sessionUid }
+});
+
+    for (const p of participants) {
+      await notificationService.createNotification(
+        p.user_public_id,
+        "session_closed",
+        "Session Closed",
+        "This trade session has been closed.",
+        "session",
+        sessionUid
+      );
+    }
     return session;
   }
 }

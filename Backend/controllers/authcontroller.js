@@ -72,8 +72,31 @@ const updateProfile = async (req, res) => {
   }
 };
 
+/**
+ * LOGOUT
+ */
+const logout = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    await userService.logoutUser(token);
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully"
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
-  updateProfile
+  updateProfile,
+  logout
 };

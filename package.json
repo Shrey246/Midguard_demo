@@ -13,5 +13,10 @@
     "sequelize": "^6.37.7",
     "ulid": "^3.0.2",
     "uuid": "^13.0.0"
+   "name": "midguard-backend",
+   "version": "1.0.0",
+   "main": "app.js",
+   "scripts": {
+  "start": "node app.js"
   }
 }
